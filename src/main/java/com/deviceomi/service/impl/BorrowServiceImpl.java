@@ -1,15 +1,10 @@
 package com.deviceomi.service.impl;
 
-import com.deviceomi.model.BorrowEntity;
-import com.deviceomi.model.DepartmentEntity;
-import com.deviceomi.model.DeviceEntity;
+import com.deviceomi.model.*;
 import com.deviceomi.payload.request.BorrowRequest;
 import com.deviceomi.payload.response.BorrowResponse;
 import com.deviceomi.payload.response.UserBorrowResponse;
-import com.deviceomi.repository.BorrowRepository;
-import com.deviceomi.repository.DepartmentRepository;
-import com.deviceomi.repository.DeviceRepository;
-import com.deviceomi.repository.UserRepository;
+import com.deviceomi.repository.*;
 import com.deviceomi.service.BorrowService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -25,11 +20,22 @@ public class BorrowServiceImpl implements BorrowService {
     @Autowired
     DeviceRepository deviceRepository;
 
-    @Autowired
-    UserRepository userRepository;
+//    @Autowired
+//    UserRepository userRepository;
 
     @Autowired
     DepartmentRepository departmentRepository;
+
+    @Autowired
+    HistoryRepository historyRepository;
+
+    public HistoryEntity historyEntity(String context,String editObject){
+        HistoryEntity historyEntity=new HistoryEntity();
+        historyEntity.setContent(context);
+        historyEntity.setPage("Quản lý mươn trả");
+        historyEntity.setEditObject(editObject);
+        return historyEntity;
+    }
 
     @Override
     public List<BorrowEntity> findByDeviceId(Long deviceId) {
@@ -58,8 +64,9 @@ public class BorrowServiceImpl implements BorrowService {
             DepartmentEntity departmentEntity = departmentRepository.findById(borrowRequest.getIdDepartment()).orElse(new DepartmentEntity());
             borrowEntity.setDeparmentBorrow(departmentEntity);
         }
-
-        return (T) borrowRepository.save(borrowEntity);
+        borrowRepository.save(borrowEntity);
+        historyRepository.save(historyEntity("đã tạo mới thông tin mượn trả với mã thiết bị ",borrowEntity.getDeviceBorrow().getCodeDevice()));
+        return null;
     }
 
     @Override
@@ -81,6 +88,7 @@ public class BorrowServiceImpl implements BorrowService {
                 borrowOld.setDeviceBorrow(deviceRepository.findById(request.getIdDevice()).orElse(new DeviceEntity()));
             }
             borrowRepository.save(borrowOld);
+            historyRepository.save(historyEntity("đã chỉnh sửa thông tin mượn trả với mã thiết bị ",borrowOld.getDeviceBorrow().getCodeDevice()));
         }
     }
 
@@ -115,7 +123,11 @@ public class BorrowServiceImpl implements BorrowService {
 
     @Override
     public void deleteBorrow(Long id) {
-        borrowRepository.deleteById(id);
+        BorrowEntity borrowEntity=borrowRepository.findById(id).orElse(new BorrowEntity());
+        if(borrowEntity!=null){
+            borrowRepository.deleteById(id);
+            historyRepository.save(historyEntity("đã xóa thông tin mượn trả với mã thiết bị ",borrowEntity.getDeviceBorrow().getCodeDevice()));
+        }
     }
 
     @Override

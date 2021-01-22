@@ -54,12 +54,12 @@ public class DevicePersonRequest {
         return devicePersonEntity;
     }
 
-    public DevicePersonEntity toDeviceEntity(DevicePersonEntity devicePersonEntity){
+    public DevicePersonEntity toDeviceEntity(UserEntity userEntity,DevicePersonEntity devicePersonEntity){
         devicePersonEntity.setIdDevice(getIdDevice());
         devicePersonEntity.setTypeDevice(getTypeDevice());
         devicePersonEntity.setDeviceAttach(getDeviceAttach());
         devicePersonEntity.setDescription(getDescription());
-        devicePersonEntity.setModifiedDate(getModifiedDate());
+        devicePersonEntity.setUserDevices(userEntity);
         return devicePersonEntity;
     }
 }

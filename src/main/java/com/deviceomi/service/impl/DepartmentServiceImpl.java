@@ -2,7 +2,6 @@ package com.deviceomi.service.impl;
 
 import com.deviceomi.model.DepartmentEntity;
 import com.deviceomi.payload.request.DepartmentRequest;
-import com.deviceomi.payload.response.BorrowResponse;
 import com.deviceomi.payload.response.DepartmentResponse;
 import com.deviceomi.repository.DepartmentRepository;
 import com.deviceomi.service.DeparmentService;
@@ -33,8 +32,9 @@ public class DepartmentServiceImpl implements DeparmentService {
      * */
     public DepartmentEntity createDepartment(DepartmentRequest departmentRequest){
         if(departmentRequest != null){
-            DepartmentEntity departmentEntity = departmentRequest.toEntity();
-            return departmentRepository.save(departmentEntity);
+            DepartmentEntity departmentEntity=departmentRepository.save(departmentRequest.toEntity());
+
+            return departmentEntity;
         }
         return null;
     }

@@ -25,6 +25,9 @@ public class RepairRequest {
             repairEntity.setDateRepair(FormatDate.stringToDate(getDateRepair()));
         if(getDateFinish() != null)
             repairEntity.setDateFinish(FormatDate.stringToDate(getDateFinish()));
+        if(getStatus() != null){
+            repairEntity.setStatus(getStatus());
+        }
         return repairEntity;
     }
 
@@ -39,6 +42,9 @@ public class RepairRequest {
             repairEntity.setDateRepair(FormatDate.stringToDate(getDateRepair()));
         if(getDateFinish() != null)
             repairEntity.setDateFinish(FormatDate.stringToDate(getDateFinish()));
+        if(getStatus() != null){
+            repairEntity.setStatus(getStatus());
+        }
         return repairEntity;
     }
 }

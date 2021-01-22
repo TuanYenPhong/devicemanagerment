@@ -1,14 +1,17 @@
 package com.deviceomi.service.impl;
 
 import com.deviceomi.model.UserEntity;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
@@ -16,13 +19,14 @@ import java.util.stream.Collectors;
 
 @Data
 @AllArgsConstructor
-@EqualsAndHashCode
+@NoArgsConstructor
+@Component
+@Transactional
 public class UserDetailsImpl implements UserDetails {
     private Long id;
 
     private String username;
 
-    @JsonIgnore
     private String password;
 
     private Collection<? extends GrantedAuthority> authorities;
@@ -34,6 +38,11 @@ public class UserDetailsImpl implements UserDetails {
         return new UserDetailsImpl(userEntity.getId(), userEntity.getUserName(), userEntity.getPassword(),authorities);
     }
 
+
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return authorities;
+    }
 
     @Override
     public boolean isAccountNonExpired() {
@@ -55,16 +64,22 @@ public class UserDetailsImpl implements UserDetails {
         return true;
     }
 
-//    @Override
-//    public boolean equals(Object o){
-//        if(this == o){
-//            return true;
-//        }
-//        if(o == null || getClass() != o.getClass()){
-//            return false;
-//        }
-//        UserDetailsImpl userDetails = (UserDetailsImpl) o;
-//        return Objects.equals(id, userDetails.id);
-//    }
-
+    @Override
+    public boolean equals(Object o){
+        if(this == o){
+            return true;
+        }
+        if(o == null || getClass() != o.getClass()){
+            return false;
+        }
+        UserDetailsImpl userDetails = (UserDetailsImpl) o;
+        return Objects.equals(id, userDetails.id);
+    }
+    public UserEntity getUser() {
+        UserEntity userEntity=new UserEntity();
+        userEntity.setId(id);
+        userEntity.setUserName(username);
+        userEntity.setPassword(password);
+        return userEntity;
+    }
 }

@@ -10,6 +10,7 @@ import io.swagger.annotations.ApiParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -18,13 +19,14 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/device_person")
 @Api(value = "Device Person APIs")
+@PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_USER')")
 public class DevicePersonController {
     @Autowired
     private DevicePersonService devicePersonService;
 
     @ApiOperation(value = "Hiển thị tất cả thông tin device cá nhân")
     @GetMapping("")
-    private ResponseEntity getAllDevicePerson(){
+    public ResponseEntity getAllDevicePerson(){
         try {
             List<DevicePersonResponse> devicePerson=devicePersonService.findAll();
             if(!devicePerson.isEmpty()) return new ResponseEntity(devicePerson, HttpStatus.OK);
@@ -36,11 +38,9 @@ public class DevicePersonController {
 
     @ApiOperation(value = "Thêm device cá nhân")
     @PostMapping("")
-    private ResponseEntity create(@ApiParam("Thêm device cá nhân") @Valid @RequestBody DevicePersonRequest devicePersonRequest){
+    public ResponseEntity create(@ApiParam("Thêm device cá nhân") @Valid @RequestBody DevicePersonRequest devicePersonRequest){
         try {
-            List<DevicePersonResponse> devicePersonResponse=devicePersonService.create(devicePersonRequest);
-            if(!devicePersonResponse.isEmpty())
-                return new ResponseEntity(devicePersonResponse, HttpStatus.OK);
+            if(devicePersonService.create(devicePersonRequest)) return new ResponseEntity( HttpStatus.CREATED);
             return new ResponseEntity(HttpStatus.NO_CONTENT);
         }catch (Exception e){ return new ResponseEntity(null, HttpStatus.INTERNAL_SERVER_ERROR); }
 
@@ -48,20 +48,34 @@ public class DevicePersonController {
 
     @ApiOperation(value = "Chỉnh sửa device cá nhân")
     @PutMapping("")
-    private ResponseEntity update(@ApiParam("Chỉnh sửa device cá nhân") @Valid @RequestBody DevicePersonRequest devicePersonRequest){
+    public ResponseEntity update(@ApiParam("Chỉnh sửa device cá nhân") @Valid @RequestBody DevicePersonRequest devicePersonRequest){
         try {
-            return new ResponseEntity(devicePersonService.update(devicePersonRequest),HttpStatus.NO_CONTENT);
+            if(devicePersonService.update(devicePersonRequest)) return new ResponseEntity(HttpStatus.OK);
+            return new ResponseEntity(HttpStatus.NO_CONTENT);
         }catch (Exception e){return new ResponseEntity(null,HttpStatus.INTERNAL_SERVER_ERROR);}
     }
 
     @ApiOperation(value = "Tìm kiếm device cá nhân theo các tiêu chí khác nhau")
+    @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_USER')")
     @GetMapping("/search")
-    private ResponseEntity search(@RequestBody DevicePersonSearch devicePersonSearch){
+    public ResponseEntity search(@ApiParam("Tìm kiếm device cá nhân")@RequestBody DevicePersonSearch devicePersonSearch){
         try {
             List<DevicePersonResponse> devicePersonResponse=devicePersonService.search(devicePersonSearch);
             if(!devicePersonResponse.isEmpty()) return new ResponseEntity(devicePersonResponse,HttpStatus.OK);
             return new ResponseEntity(HttpStatus.NO_CONTENT);
         }catch (Exception e){return new ResponseEntity(null,HttpStatus.INTERNAL_SERVER_ERROR);}
+    }
+
+    @ApiOperation(value = "Xóa device cá nhân")
+    @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_USER')")
+    @DeleteMapping("/{id}")
+    public ResponseEntity deleteDevicePerson(@ApiParam("Xóa device cá nhân") @PathVariable Long id){
+        try {
+            if(devicePersonService.delete(id)) return new ResponseEntity(HttpStatus.OK);
+            return new ResponseEntity(HttpStatus.NO_CONTENT);
+        }catch (Exception e){
+            return new ResponseEntity(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
 }

@@ -6,14 +6,16 @@ import com.deviceomi.payload.response.DevicePersonResponse;
 import com.deviceomi.search.DevicePersonSearch;
 
 import java.util.List;
-import java.util.Optional;
 
 public interface DevicePersonService {
+
     List<DevicePersonResponse> findAll();
 
-    List<DevicePersonResponse> create(DevicePersonRequest devicePersonRequest);
+    boolean create(DevicePersonRequest devicePersonRequest);
 
     boolean update(DevicePersonRequest devicePersonRequest);
+
+    boolean delete(Long id);
 
     List<DevicePersonResponse> search(DevicePersonSearch devicePersonSearch);
 }

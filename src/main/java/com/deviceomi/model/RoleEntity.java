@@ -13,16 +13,7 @@ import java.util.Set;
 @Data
 
 public class RoleEntity extends AuditEntity{
-
-//    @Column(name="code")
-//    private String code;
-//    @Column(name="name")
-//    private String name;
-//
     @Enumerated(EnumType.STRING)
     @Column(length = 20)
     private ERole name;
-
-//    @ManyToMany(mappedBy = "roles")
-//    private Set<UserEntity> users = new HashSet<>();
 }

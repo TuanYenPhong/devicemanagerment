@@ -1,12 +1,11 @@
 package com.deviceomi.service.impl;
 
-import com.deviceomi.model.DeviceEntity;
-import com.deviceomi.model.DevicePersonEntity;
-import com.deviceomi.model.RepairEntity;
+import com.deviceomi.model.*;
 import com.deviceomi.payload.request.RepairRequest;
 import com.deviceomi.payload.response.DevicePersonResponse;
 import com.deviceomi.payload.response.RepairResponse;
 import com.deviceomi.repository.DeviceRepository;
+import com.deviceomi.repository.HistoryRepository;
 import com.deviceomi.repository.RepairRepository;
 import com.deviceomi.search.RepairSearch;
 import com.deviceomi.service.RepairService;
@@ -29,9 +28,21 @@ public class RepairServiceImpl implements RepairService {
     @Autowired
     DeviceRepository deviceRepository;
 
+    @Autowired
+    private HistoryRepository historyRepository;
+
+    public HistoryEntity historyEntity(String context,String editObject){
+        HistoryEntity historyEntity=new HistoryEntity();
+        historyEntity.setContent(context);
+        historyEntity.setPage("Quản lý sửa chữa");
+        historyEntity.setEditObject(editObject);
+        return historyEntity;
+    }
+
     @Override
     public void saveOrUpdate(RepairRequest repairRequest) {
         if (repairRequest != null){
+            HistoryEntity historyEntity = null;
             RepairEntity repairEntity = null;
             if (repairRequest.getId() != null){
                 /**
@@ -44,6 +55,7 @@ public class RepairServiceImpl implements RepairService {
                     deviceEntity.setStatus(repairRequest.getStatus());
                     deviceRepository.save(deviceEntity);
                     repairEntity.setDeviceRepair(deviceEntity);
+                    historyEntity=historyEntity("đã tạo mới thông tin mượn trả với mã thiết bị ",deviceEntity.getCodeDevice());
                 }
                 repairEntity = repairRequest.toEntity(repairEntity);
             }else {
@@ -55,9 +67,12 @@ public class RepairServiceImpl implements RepairService {
                     DeviceEntity deviceEntity = deviceRepository.findById(repairRequest.getIdDevice()).orElse(new DeviceEntity());
                     deviceEntity.setStatus(repairRequest.getStatus());
                     repairEntity.setDeviceRepair(deviceEntity);
+                    historyEntity=historyEntity("đã chỉnh sửa thông tin mượn trả với mã thiết bị ",deviceEntity.getCodeDevice());
                 }
             }
             repairRepository.save(repairEntity);
+            if(historyEntity!=null)
+                historyRepository.save(historyEntity);
         }
     }
 
@@ -65,6 +80,7 @@ public class RepairServiceImpl implements RepairService {
     public void delete(Long id) {
         RepairEntity repairEntity = repairRepository.findById(id).orElse(new RepairEntity());
         repairRepository.delete(repairEntity);
+        historyRepository.save(historyEntity("đã xóa thông tin mượn trả với mã thiết bị ",repairEntity.getDeviceRepair().getCodeDevice()));
     }
 
     @Override

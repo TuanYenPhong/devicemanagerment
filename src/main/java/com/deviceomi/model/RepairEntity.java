@@ -22,4 +22,7 @@ public class RepairEntity extends AuditEntity{
     @ManyToOne
     @JoinColumn(name="device_id")
     private DeviceEntity deviceRepair;
+
+    @Column(name = "status")
+    private Integer status;
 }

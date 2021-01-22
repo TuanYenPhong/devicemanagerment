@@ -22,10 +22,10 @@ public class UserEntity extends AuditEntity{
     private String userName;
 
     @Column(name="password")
-    private  String password;
+    private String password;
 
     @Column(name="fullname")
-    private  String fullname;
+    private String fullname;
 
     public UserEntity(String username, String fullname, String password) {
         this.userName = username;
@@ -33,7 +33,7 @@ public class UserEntity extends AuditEntity{
         this.password = password;
     }
 
-    @ManyToMany(fetch = FetchType.LAZY)
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "user_role",
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "role_id")
@@ -51,4 +51,7 @@ public class UserEntity extends AuditEntity{
     @JsonIgnore
     @OneToMany(mappedBy = "userBorrow")
     private Set<BorrowEntity> userBorrow = new HashSet<>();
+
+    @Column
+    private int status;
 }

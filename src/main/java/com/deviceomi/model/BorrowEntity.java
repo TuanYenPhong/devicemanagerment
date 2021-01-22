@@ -30,6 +30,8 @@ public class BorrowEntity extends AuditEntity{
 
     @ManyToOne
     @JoinColumn(name="deparment_id")
-
     private DepartmentEntity deparmentBorrow;
+
+    @Column(name = "status")
+    private Integer status;
 }

@@ -33,10 +33,15 @@ public class BorrowRequest{
 
     private Long userId;
 
+    private Integer status;
+
     public BorrowEntity toEntity(BorrowEntity borrowEntity, BorrowRequest borrowRequest){
 
         if(getId() != null){
             borrowEntity.setId(getId());
+        }
+        if(borrowRequest.getStatus() != null){
+            borrowEntity.setStatus(borrowRequest.getStatus());
         }
         if(borrowRequest.getDateReturn() != null){
             borrowEntity.setDateReturn(FormatDate.stringToDate(borrowRequest.getDateReturn()));
@@ -50,6 +55,9 @@ public class BorrowRequest{
         borrowEntity.setReson(getReson());
         if(getDateReturn() != null){
             borrowEntity.setDateReturn(FormatDate.stringToDate(getDateReturn()));
+        }
+        if(getStatus() != null){
+            borrowEntity.setStatus(getStatus());
         }
         return borrowEntity;
     }

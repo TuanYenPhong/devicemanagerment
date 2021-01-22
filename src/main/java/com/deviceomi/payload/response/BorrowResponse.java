@@ -30,12 +30,16 @@ public class BorrowResponse {
      * */
     private String dateReturn;
 
-    private Integer stauts;
+    private Integer status;
 
     private String region;
 
     public BorrowResponse(BorrowEntity borrowEntity) {
         setId(borrowEntity.getId());
+
+        if (borrowEntity.getStatus() != null){
+            setStatus(borrowEntity.getStatus());
+        }
 
         if(borrowEntity.getDeviceBorrow() !=null){
             setIdDevice(borrowEntity.getDeviceBorrow().getCodeDevice());
