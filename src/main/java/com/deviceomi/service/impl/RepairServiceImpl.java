@@ -31,13 +31,6 @@ public class RepairServiceImpl implements RepairService {
     @Autowired
     private HistoryRepository historyRepository;
 
-    public HistoryEntity historyEntity(String context,String editObject){
-        HistoryEntity historyEntity=new HistoryEntity();
-        historyEntity.setContent(context);
-        historyEntity.setPage("Quản lý sửa chữa");
-        historyEntity.setEditObject(editObject);
-        return historyEntity;
-    }
 
     @Override
     public void saveOrUpdate(RepairRequest repairRequest) {
@@ -55,7 +48,8 @@ public class RepairServiceImpl implements RepairService {
                     deviceEntity.setStatus(repairRequest.getStatus());
                     deviceRepository.save(deviceEntity);
                     repairEntity.setDeviceRepair(deviceEntity);
-                    historyEntity=historyEntity("đã tạo mới thông tin mượn trả với mã thiết bị ",deviceEntity.getCodeDevice());
+                    historyEntity=new HistoryEntity("đã tạo mới thông tin mượn trả với mã thiết bị ",
+                        deviceEntity.getCodeDevice(),"Quản lý sửa chữa");
                 }
                 repairEntity = repairRequest.toEntity(repairEntity);
             }else {
@@ -63,12 +57,13 @@ public class RepairServiceImpl implements RepairService {
                  * create
                  * */
                 repairEntity = repairRequest.toEntity();
-                if(repairRequest.getIdDevice() != null){
+
                     DeviceEntity deviceEntity = deviceRepository.findById(repairRequest.getIdDevice()).orElse(new DeviceEntity());
                     deviceEntity.setStatus(repairRequest.getStatus());
                     repairEntity.setDeviceRepair(deviceEntity);
-                    historyEntity=historyEntity("đã chỉnh sửa thông tin mượn trả với mã thiết bị ",deviceEntity.getCodeDevice());
-                }
+                    historyEntity=new HistoryEntity("đã chỉnh sửa thông tin mượn trả với mã thiết bị ",
+                            deviceEntity.getCodeDevice(),"Quản lý sửa chữa");
+
             }
             repairRepository.save(repairEntity);
             if(historyEntity!=null)
@@ -80,7 +75,8 @@ public class RepairServiceImpl implements RepairService {
     public void delete(Long id) {
         RepairEntity repairEntity = repairRepository.findById(id).orElse(new RepairEntity());
         repairRepository.delete(repairEntity);
-        historyRepository.save(historyEntity("đã xóa thông tin mượn trả với mã thiết bị ",repairEntity.getDeviceRepair().getCodeDevice()));
+        historyRepository.save(new HistoryEntity("đã xóa thông tin mượn trả với mã thiết bị ",
+                repairEntity.getDeviceRepair().getCodeDevice(),"Quản lý sửa chữa"));
     }
 
     @Override

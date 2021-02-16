@@ -23,8 +23,9 @@ public class RepairResponse {
             if(repairEntity.getDateFinish() != null)
                 this.dateFinish = FormatDate.dateToString(repairEntity.getDateFinish());
             if(repairEntity.getDeviceRepair() != null) {
-                this.status = repairEntity.getDeviceRepair().getStatus();
                 this.entities = repairEntity.getDeviceRepair();
             }
+            if(repairEntity.getStatus() != null)
+                this.status = repairEntity.getStatus();
     }
 }

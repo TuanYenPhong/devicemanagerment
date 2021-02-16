@@ -20,8 +20,8 @@ public class HistoryServiceImpl implements HistoryService {
     public List<HistoryResponse> findAllHistory() {
         List<HistoryResponse> historyResponse=new ArrayList<>();
         List<HistoryEntity> historyEntities=historyRepository.findAll();
-        historyEntities.stream().map(historyEntity -> new HistoryResponse(historyEntity)).forEach(historyResponse::add);
-        Collections.reverse(historyEntities);
+        historyEntities.stream().map(history-> new HistoryResponse(history)).forEach(historyResponse::add);
+//        Collections.reverse(historyEntities);
         return historyResponse;
     }
 }

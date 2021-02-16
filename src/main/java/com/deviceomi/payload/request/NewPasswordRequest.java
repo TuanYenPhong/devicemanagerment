@@ -12,4 +12,5 @@ import javax.validation.constraints.NotBlank;
 public class NewPasswordRequest {
     @NotBlank
     private String password;
+    private String token;
 }

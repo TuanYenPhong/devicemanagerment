@@ -25,9 +25,10 @@ public class PasswordResetTokenServiceImpl implements PasswordResetTokenService 
     private UserRepository userRepository;
 
     @Override
-    public PasswordReset createPasswordResetToken(PasswordResetRequest passwordResetRequest){
+    public PasswordReset createPasswordResetToken(String email){
+        if(!userRepository.existsByUserName(email)) return null;
         Util util=new Util();
-        UserEntity user=userRepository.findByUserName(passwordResetRequest.getEmail());
+        UserEntity user=userRepository.findByUserName(email);
         if (user==null) return null;
         PasswordReset passwordReset=passwordResetRepository.findByUser(user).orElse(new PasswordReset().setUser(user));
         passwordReset.setToken(util.generateRandomUuid());

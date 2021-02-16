@@ -27,13 +27,6 @@ public class DevicePersonServieceImpl implements DevicePersonService {
     @Autowired
     private HistoryRepository historyRepository;
 
-    public HistoryEntity historyEntity(String content,String editObject){
-        HistoryEntity historyEntity=new HistoryEntity();
-        historyEntity.setContent(content);
-        historyEntity.setPage("Quản lý nhân sự dùng device cá nhân");
-        historyEntity.setEditObject(editObject);
-        return historyEntity;
-    }
 
     /**
      * Show DevicePerson
@@ -61,7 +54,8 @@ public class DevicePersonServieceImpl implements DevicePersonService {
         if (devicePersonRepository.findByIdDevice(devicePersonRequest.getIdDevice())==null && userEntity!=null && userEntity.getStatus()==1 ){
             DevicePersonEntity devicePersonEntity=devicePersonRequest.toDeviceEntity(userEntity);
             devicePersonRepository.save(devicePersonEntity);
-            historyRepository.save(historyEntity("đã tạo mới thông tin thiết bị cá nhân với mã thiết bị ",devicePersonEntity.getIdDevice()));
+            historyRepository.save(new HistoryEntity("đã tạo mới thông tin thiết bị cá nhân với mã thiết bị ",
+                    devicePersonEntity.getIdDevice(),"Quản lý thiết bị cá nhân"));
             return true;
         }
         return false;
@@ -78,7 +72,8 @@ public class DevicePersonServieceImpl implements DevicePersonService {
         UserEntity userEntity=userRepository.findById(devicePersonRequest.getIdUser()).orElse(new UserEntity());
         if(devicePersonEntity!=null&&userEntity!=null&&userEntity.getStatus()==1) {
             devicePersonRepository.save(devicePersonRequest.toDeviceEntity(userEntity,devicePersonEntity));
-            historyRepository.save(historyEntity("đã chỉnh sửa thông tin thiết bị cá nhân với mã thiết bị ",devicePersonRequest.getIdDevice()));
+            historyRepository.save(new HistoryEntity("đã chỉnh sửa thông tin thiết bị cá nhân với mã thiết bị ",
+                    devicePersonEntity.getIdDevice(),"Quản lý thiết bị cá nhân"));
             return true;
         }
         return false;
@@ -105,7 +100,8 @@ public class DevicePersonServieceImpl implements DevicePersonService {
         DevicePersonEntity devicePersonEntity=devicePersonRepository.findById(id).orElse(new DevicePersonEntity());
         if(devicePersonEntity!=null) {
             devicePersonRepository.delete(devicePersonEntity);
-            historyRepository.save(historyEntity("đã xóa thông tin thiết bị cá nhân với mã thiết bị ",devicePersonEntity.getIdDevice()));
+            historyRepository.save(new HistoryEntity("đã xóa thông tin thiết bị cá nhân với mã thiết bị ",
+                    devicePersonEntity.getIdDevice(),"Quản lý thiết bị cá nhân"));
             return true;
         }
         return false;
@@ -125,5 +121,11 @@ public class DevicePersonServieceImpl implements DevicePersonService {
                         devicePersonSearch.getFromModifiedDate(),devicePersonSearch.getToModifiedDate());
         devicePersonEntities.stream().map(a ->new DevicePersonResponse(a)).forEach(devicePersonResponses::add);
         return devicePersonResponses;
+    }
+
+    @Override
+    public DevicePersonResponse getDeviceById(Long id) {
+        DevicePersonResponse devicePersonResponse = new DevicePersonResponse(devicePersonRepository.findById(id).orElse(new DevicePersonEntity()));
+        return devicePersonResponse;
     }
 }

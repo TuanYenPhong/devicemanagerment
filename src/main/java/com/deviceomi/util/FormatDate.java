@@ -11,7 +11,7 @@ public class FormatDate {
     public  static Date stringToDate(String date){
         Date startDate = null;
         try {
-            if(date != null)
+            if(date != null && !date.trim().equals(""))
                 startDate = df.parse(date);
         } catch (ParseException e) {
             e.printStackTrace();

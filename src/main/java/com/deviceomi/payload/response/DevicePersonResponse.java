@@ -3,6 +3,7 @@ package com.deviceomi.payload.response;
 import com.deviceomi.model.DevicePersonEntity;
 import com.deviceomi.model.UserEntity;
 import com.deviceomi.payload.DeviceBase;
+import com.deviceomi.util.FormatDate;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -17,6 +18,8 @@ import java.util.Date;
 @Setter
 @NoArgsConstructor
 public class DevicePersonResponse {
+    private Long id;
+
     /**
      *   Ma thiet bi
      */
@@ -46,16 +49,22 @@ public class DevicePersonResponse {
     /**
      *Ngay cap nhat gan nhat
      */
-    private Date modifiedDate;
+    private String modifiedDate;
 
     public DevicePersonResponse (DevicePersonEntity devicePersonEntity){
+
+        this.setId(devicePersonEntity.getId());
+
         this.setIdDevice(devicePersonEntity.getIdDevice());
         this.setTypeDevice(devicePersonEntity.getTypeDevice());
         this.setDescription(devicePersonEntity.getDescription());
         this.setDeviceAttach(devicePersonEntity.getDeviceAttach());
         this.setNamePerson(devicePersonEntity.getUserDevices().getFullname());
-        this.setNameDepartment(devicePersonEntity.getUserDevices().getUserDepartment().getNameDepartment());
-        this.setModifiedDate(devicePersonEntity.getModifiedDate());
+
+        if(devicePersonEntity.getUserDevices().getUserDepartment() != null){
+            this.setNameDepartment(devicePersonEntity.getUserDevices().getUserDepartment().getNameDepartment());
+        }
+        this.setModifiedDate(FormatDate.dateToString(devicePersonEntity.getModifiedDate()));
     }
 
 }

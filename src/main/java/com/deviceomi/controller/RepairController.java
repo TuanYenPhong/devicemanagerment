@@ -31,14 +31,24 @@ public class RepairController {
 
     @ApiOperation(value = "Tạo thiết bị sửa chữa")
     @PostMapping("/repair")
-    public void createRepair(@ApiParam(value = "Tạo thiết bị sửa chữa")@RequestBody RepairRequest repairRequest){
-        repairService.saveOrUpdate(repairRequest);
+    public ResponseEntity<?> createRepair(@ApiParam(value = "Tạo thiết bị sửa chữa")@RequestBody RepairRequest repairRequest){
+        try{
+            repairService.saveOrUpdate(repairRequest);
+            return new ResponseEntity<>(repairRequest, HttpStatus.CREATED);
+        } catch (Exception e){
+            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
     @ApiOperation(value = "Sửa thiết bị sửa chữa")
     @PutMapping("/repair")
-    public void updateRepair(@ApiParam(value = "Sửa thiết bị sửa chữa")@RequestBody RepairRequest repairRequest){
-        repairService.saveOrUpdate(repairRequest);
+    public ResponseEntity<?> updateRepair(@ApiParam(value = "Sửa thiết bị sửa chữa")@RequestBody RepairRequest repairRequest){
+        try{
+            repairService.saveOrUpdate(repairRequest);
+            return new ResponseEntity<>(repairRequest, HttpStatus.CREATED);
+        } catch (Exception e){
+            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
     @ApiOperation(value = "Xóa thiết bị sửa chữa")

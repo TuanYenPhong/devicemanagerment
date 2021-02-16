@@ -9,6 +9,7 @@ import javax.persistence.Column;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 import java.util.Date;
 
 @Data
@@ -25,6 +26,8 @@ public class BorrowRequest{
 
     private String description;
 
+    private String dateBorrow;
+
     private String dateReturn;
 
     private Long idDevice;
@@ -35,30 +38,22 @@ public class BorrowRequest{
 
     private Integer status;
 
-    public BorrowEntity toEntity(BorrowEntity borrowEntity, BorrowRequest borrowRequest){
-
-        if(getId() != null){
-            borrowEntity.setId(getId());
-        }
-        if(borrowRequest.getStatus() != null){
-            borrowEntity.setStatus(borrowRequest.getStatus());
-        }
-        if(borrowRequest.getDateReturn() != null){
-            borrowEntity.setDateReturn(FormatDate.stringToDate(borrowRequest.getDateReturn()));
-        }
-        borrowEntity.setReson(borrowRequest.getReson());
+    public BorrowEntity toEntity(BorrowEntity borrowEntity){
+        if(getId() != null) borrowEntity.setId(getId());
+        if(this.getStatus() != null) borrowEntity.setStatus(this.getStatus());
+        if(this.getDateReturn() != null)
+            borrowEntity.setDateReturn(FormatDate.stringToDate(this.getDateReturn()));
+        borrowEntity.setReson(this.getReson());
         return borrowEntity;
     }
 
     public BorrowEntity toEntity(){
         BorrowEntity borrowEntity = new BorrowEntity();
         borrowEntity.setReson(getReson());
-        if(getDateReturn() != null){
-            borrowEntity.setDateReturn(FormatDate.stringToDate(getDateReturn()));
-        }
-        if(getStatus() != null){
-            borrowEntity.setStatus(getStatus());
-        }
+        if(getDateReturn() != null) borrowEntity.setDateReturn(FormatDate.stringToDate(getDateReturn()));
+        if(getDateBorrow()!=null) borrowEntity.setDateBorrow(FormatDate.stringToDate(getDateBorrow()));
+        else borrowEntity.setDateBorrow(FormatDate.stringToDate(LocalDate.now().toString()));
+        if(getStatus() != null) borrowEntity.setStatus(getStatus());
         return borrowEntity;
     }
 }

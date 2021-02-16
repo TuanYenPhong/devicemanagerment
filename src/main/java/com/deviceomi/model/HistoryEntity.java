@@ -1,6 +1,8 @@
 package com.deviceomi.model;
 
 import lombok.Data;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 import org.springframework.data.annotation.CreatedBy;
@@ -11,7 +13,8 @@ import javax.persistence.*;
 import java.util.Date;
 
 @EntityListeners(AuditingEntityListener.class)
-@Data
+@Getter
+@NoArgsConstructor
 @Entity
 @Table(name="history")
 public class HistoryEntity {
@@ -36,5 +39,9 @@ public class HistoryEntity {
     @Column(name="page")
     private String page;
 
-
+    public HistoryEntity(String context,String editObject,String page){
+        this.content=context;
+        this.page=page;
+        this.editObject=editObject;
+    }
 }

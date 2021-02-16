@@ -4,6 +4,7 @@ import com.deviceomi.model.BorrowEntity;
 import com.deviceomi.payload.request.BorrowRequest;
 import com.deviceomi.payload.response.BorrowResponse;
 import com.deviceomi.payload.response.UserBorrowResponse;
+import com.deviceomi.search.SearchBorrow;
 import com.deviceomi.service.BorrowService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -15,8 +16,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
@@ -30,12 +30,13 @@ public class BorrowController {
     @ApiOperation(value = "Tìm tất cả mượn trả")
     @GetMapping("/borrow")
     public ResponseEntity findAllBorrow(){
+
         try{
-            List<BorrowResponse> listBorrow = borrowService.findAllBorrow();
-            if(listBorrow.isEmpty()){
+            HashMap hashMapBorrow = borrowService.findAllBorrow();
+            if(hashMapBorrow.isEmpty()){
                 return new ResponseEntity(HttpStatus.NO_CONTENT);
             }
-            return new ResponseEntity(listBorrow, HttpStatus.OK);
+            return new ResponseEntity(hashMapBorrow, HttpStatus.OK);
         } catch (Exception e){
             return new ResponseEntity(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
@@ -46,8 +47,10 @@ public class BorrowController {
     public ResponseEntity createBorrow(@ApiParam("Tạo mượn trả") @Valid @RequestBody BorrowRequest borrowRequest){
         try{
             borrowService.saveBorrow(borrowRequest);
+            System.out.println("ok");
             return new ResponseEntity<>(borrowRequest, HttpStatus.CREATED);
         } catch (Exception e){
+            System.out.println("loi");
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
@@ -55,12 +58,14 @@ public class BorrowController {
     @ApiOperation(value = "Chỉnh sửa mượn trả")
     @PutMapping("/borrow")
     public ResponseEntity putBorrow(@ApiParam("Chỉnh sửa mượn trả") @Valid @RequestBody BorrowRequest borrowRequest){
-        try{
-            borrowService.updateBorrow(borrowRequest);
-            return new ResponseEntity<>(borrowRequest, HttpStatus.OK);
-        } catch (Exception e){
-            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+//        try{
+//            borrowService.updateBorrow(borrowRequest);
+//            return new ResponseEntity<>( HttpStatus.OK);
+//        } catch (Exception e){
+//            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+//        }
+        borrowService.updateBorrow(borrowRequest);
+        return new ResponseEntity<>( HttpStatus.OK);
     }
 
     @ApiOperation(value = "Tìm mượn trả dựa vào departmentid")
@@ -84,16 +89,18 @@ public class BorrowController {
 //        System.out.println("param = " + id);
 //        return null;
 //    }
+
     @GetMapping("/borrow_user")
     public ResponseEntity searchUserBorrow(){
         try {
-            Set<UserBorrowResponse> userBorrowResponse=borrowService.findAllUserBorrow();
+            List<UserBorrowResponse> userBorrowResponse=borrowService.findAllUserBorrow();
             if(userBorrowResponse.isEmpty()) return new ResponseEntity(HttpStatus.NO_CONTENT);
             return new ResponseEntity(userBorrowResponse, HttpStatus.OK);
         }catch (Exception e){
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+
     @ApiOperation(value = "Xóa mượn trả")
     @DeleteMapping("/borrow/{id}")
     public ResponseEntity<HttpStatus> deleteDepartment(@ApiParam(value = "Xóa mượn trả") @PathVariable("id") Long id){
@@ -123,8 +130,8 @@ public class BorrowController {
     @ApiOperation(value = "Tìm mượn trả id")
     @GetMapping("/borrowid")
     public ResponseEntity getBorrow(){
-        List<BorrowEntity> borrowEntity = borrowService.findBorrow();
         try{
+            List<BorrowEntity> borrowEntity = borrowService.findBorrow();
             if(!borrowEntity.isEmpty()){
                 return new ResponseEntity<>(borrowEntity, HttpStatus.OK);
             } else{
@@ -134,4 +141,18 @@ public class BorrowController {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+
+//    @GetMapping("/borrow/search")
+//    public ResponseEntity searchBorrow(SearchBorrow searchBorrow){
+//        try{
+//            List<BorrowResponse> borrows = borrowService.searchBorrow(searchBorrow);
+//            if(!borrows.isEmpty()){
+//                return new ResponseEntity<>(borrows, HttpStatus.OK);
+//            } else{
+//                return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+//            }
+//        } catch (Exception e){
+//            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+//        }
+//    }
 }

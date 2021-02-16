@@ -18,4 +18,6 @@ public interface DevicePersonService {
     boolean delete(Long id);
 
     List<DevicePersonResponse> search(DevicePersonSearch devicePersonSearch);
+
+    DevicePersonResponse getDeviceById(Long id);
 }

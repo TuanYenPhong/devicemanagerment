@@ -3,6 +3,7 @@ package com.deviceomi.controller;
 import com.deviceomi.payload.request.NewPasswordRequest;
 import com.deviceomi.payload.request.SignupRequest;
 import com.deviceomi.payload.response.MessageResponse;
+import com.deviceomi.payload.response.UserRegionResponse;
 import com.deviceomi.payload.response.UserResponse;
 import com.deviceomi.service.UserService;
 import io.swagger.annotations.Api;
@@ -70,6 +71,16 @@ public class UserController {
             return new ResponseEntity(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
-
+    @ApiOperation(value = "Lấy nhân viên theo nhóm region")
+    @GetMapping("/region")
+    public ResponseEntity<?> getUserRegion() {
+        try {
+            List<UserRegionResponse> users = userService.findUserRegison();
+            if (users.isEmpty()) return ResponseEntity.ok(HttpStatus.NO_CONTENT);
+            return new ResponseEntity(users, HttpStatus.OK);
+        } catch (Exception e) {
+            return ResponseEntity.ok(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
 
 }

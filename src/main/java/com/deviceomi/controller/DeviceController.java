@@ -1,13 +1,10 @@
 package com.deviceomi.controller;
 
 import com.deviceomi.payload.request.DeviceRequest;
-import com.deviceomi.payload.request.DeviceTestRequest;
-import com.deviceomi.payload.request.DeviceWorkRequest;
 import com.deviceomi.service.DeviceService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
-import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -64,17 +61,25 @@ public class DeviceController {
     @ApiOperation(value = "Tạo thiết bị")
     @PostMapping("/device")
     public ResponseEntity<?> createDeviceWork(@ApiParam(value = "Tạo thiết bị") @Valid @RequestBody DeviceRequest deviceRequest) {
-        if (deviceService.save(deviceRequest) != null)
-            return new ResponseEntity<>(deviceRequest, HttpStatus.OK);
-        return new ResponseEntity<>(deviceRequest, HttpStatus.BAD_REQUEST);
+        try{
+            if (deviceService.save(deviceRequest) != null)
+                return new ResponseEntity<>(deviceRequest, HttpStatus.OK);
+            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+        }catch (Exception e){
+            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
     @ApiOperation(value = "Cập nhập thiết bị")
     @PutMapping("/device")
     public ResponseEntity<?> updateDeviceWork(@ApiParam(value = "Cập nhập thiết bị") @Valid @RequestBody DeviceRequest deviceRequest) {
-        if (deviceService.save(deviceRequest) != null)
-            return new ResponseEntity<>(deviceRequest, HttpStatus.OK);
-        return new ResponseEntity<>(deviceRequest, HttpStatus.BAD_REQUEST);
+        try{
+            if (deviceService.save(deviceRequest) != null)
+                return new ResponseEntity<>(deviceRequest, HttpStatus.OK);
+            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+        }catch (Exception e){
+            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
     @ApiOperation(value = "Xóa thiết bị")
@@ -92,13 +97,27 @@ public class DeviceController {
     @ApiOperation(value = "Hiển thị tất cả thiết bị cho mượn trả và sửa chưa")
     @GetMapping("/device/all")
     public ResponseEntity<?> showDeviceAll() {
-        return new ResponseEntity<>(deviceService.getAllDevice(), HttpStatus.OK);
+        try{
+            if (deviceService.getAllDevice() != null)
+                return new ResponseEntity<>(deviceService.getAllDevice(), HttpStatus.OK);
+            else
+                return new ResponseEntity<>(null, HttpStatus.NO_CONTENT);
+        }catch (Exception e){
+            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
     @ApiOperation(value = "Hiển thị tất cả thiết bị")
     @GetMapping("/devices")
     public ResponseEntity<?> showDevices() {
-        return new ResponseEntity<>(deviceService.getDevices(), HttpStatus.OK);
+        try{
+            if (deviceService.getDevices() != null)
+                return new ResponseEntity<>(deviceService.getDevices(), HttpStatus.OK);
+            else
+                return new ResponseEntity<>(null, HttpStatus.NO_CONTENT);
+        }catch (Exception e){
+            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
     @ApiOperation(value = "Lấy thiết bị theo ID")

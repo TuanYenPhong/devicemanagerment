@@ -3,6 +3,8 @@ package com.deviceomi.service.impl;
 import com.deviceomi.model.*;
 import com.deviceomi.payload.request.NewPasswordRequest;
 import com.deviceomi.payload.request.SignupRequest;
+import com.deviceomi.payload.response.DepartmentResponse;
+import com.deviceomi.payload.response.UserRegionResponse;
 import com.deviceomi.payload.response.UserResponse;
 import com.deviceomi.repository.*;
 import com.deviceomi.service.UserService;
@@ -38,14 +40,6 @@ public class UserServiceImpl implements UserService {
     @Autowired
     private PasswordResetRepository passwordResetRepository;
 
-    public HistoryEntity historyEntity(String context, String editObject){
-        HistoryEntity historyEntity=new HistoryEntity();
-        historyEntity.setContent(context);
-        historyEntity.setPage("Quản lý hệ thống");
-        historyEntity.setEditObject(editObject);
-        return historyEntity;
-    }
-
     @Override
     public List<UserResponse> findAllUser() {
         List<UserEntity> userEntities=userRepository.findAllByStatus(1);
@@ -61,7 +55,8 @@ public class UserServiceImpl implements UserService {
         UserEntity user = signUpRequest.toUserEntity(encoder,departmentEntity);
         user.setRoles(roles(signUpRequest.getRole()));
         userRepository.save(user);
-        historyRepository.save(historyEntity("đã tạo mới thông tin user với username ",user.getUserName()));
+        historyRepository.save(new HistoryEntity("đã tạo mới thông tin user với username ",
+                user.getUserName(),"Quản lý hệ thống"));
         return true;
     }
 
@@ -72,7 +67,8 @@ public class UserServiceImpl implements UserService {
         if(userEntity!=null && userEntity.getStatus()==1 && (!username.equals(userEntity.getUserName()))) {
             userEntity.setStatus(0);
             userRepository.save(userEntity);
-            historyRepository.save(historyEntity("đã xóa thông tin user với username ",userEntity.getUserName()));
+            historyRepository.save(new HistoryEntity("đã xóa thông tin user với username ",
+                    userEntity.getUserName(),"Quản lý hệ thống"));
             return true;
         }
         return false;
@@ -86,7 +82,8 @@ public class UserServiceImpl implements UserService {
         UserEntity user=userRepository.save(signUpRequest.toUserEntity(encoder,departmentEntity,userEntity));
         user.setRoles(roles(signUpRequest.getRole()));
         userRepository.save(user);
-        historyRepository.save(historyEntity("đã chỉnh sửa thông tin user với username ",userEntity.getUserName()));
+        historyRepository.save(new HistoryEntity("đã chỉnh sửa thông tin user với username ",
+                userEntity.getUserName(),"Quản lý hệ thống"));
         return true;
     }
 
@@ -100,7 +97,7 @@ public class UserServiceImpl implements UserService {
         String username=SecurityContextHolder.getContext().getAuthentication().getName();
         UserEntity user=userRepository.findByUserName(username);
         if(user==null||user.getStatus()!=1) return false;
-        user.setPassword(encoder.encode(password.getPassword().strip()));
+        user.setPassword(encoder.encode(password.getPassword()));
         userRepository.save(user);
         return true;
     }
@@ -115,6 +112,14 @@ public class UserServiceImpl implements UserService {
         passwordReset.setExprixyDate(Instant.now().plusMillis(0));
         passwordResetRepository.save(passwordReset);
         return true;
+    }
+
+    @Override
+    public List<UserRegionResponse> findUserRegison() {
+        List<UserRegionResponse> userList = new ArrayList<>();
+        userRepository.findAll().stream().map(us -> new UserRegionResponse(us)).forEach(userList :: add);
+//        departmentRepository.findAll().stream().map(dp -> new DepartmentResponse(dp)).forEach(userList :: add);
+        return userList;
     }
 
     public Set<RoleEntity> roles(Set<String> strRoles){
@@ -146,7 +151,6 @@ public class UserServiceImpl implements UserService {
         if(passwordReset.getExprixyDate().compareTo(Instant.now())<0) return true;
         return false;
     }
-
 
 
 }

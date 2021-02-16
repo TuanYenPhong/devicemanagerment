@@ -51,11 +51,11 @@ public class LoginController {
     }
 
     @ApiOperation(value = "send token to email reset password")
-    @PostMapping("/password_reset")
-    public ResponseEntity senMail(@ApiParam("Email rest password") @RequestBody PasswordResetRequest passwordResetRequest) throws MessagingException {
+    @GetMapping("/password_reset/{email}")
+    public ResponseEntity senMail(@ApiParam("Email rest password") @PathVariable String email) throws MessagingException {
         try {
-            PasswordReset passwordReset=passwordResetTokenService.createPasswordResetToken(passwordResetRequest);
-            if (emailService.sendmail(passwordReset)) return new ResponseEntity(HttpStatus.OK);
+            if (emailService.sendMail(passwordResetTokenService.createPasswordResetToken(email)))
+                return new ResponseEntity(HttpStatus.OK);
             return new ResponseEntity(HttpStatus.NO_CONTENT);
         }catch (Exception e){
             return new ResponseEntity(HttpStatus.INTERNAL_SERVER_ERROR);
@@ -63,14 +63,13 @@ public class LoginController {
     }
 
     @ApiOperation(value = "Reset Password account")
-    @PostMapping("/password_reset/{token}")
-    public ResponseEntity resetPasswrd(@PathVariable String token,@RequestBody NewPasswordRequest password){
+    @PutMapping("/password_reset")
+    public ResponseEntity resetPasswrd(@RequestBody NewPasswordRequest password){
         try {
-            if(userService.resetPassword(token,password)) return new ResponseEntity(HttpStatus.OK);
+            if(userService.resetPassword(password.getToken(),password)) return new ResponseEntity(HttpStatus.OK);
             return new ResponseEntity(HttpStatus.NO_CONTENT);
         }catch (Exception e){
             return new ResponseEntity(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
-
 }

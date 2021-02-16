@@ -2,6 +2,7 @@ package com.deviceomi.payload.response;
 
 import com.deviceomi.model.BorrowEntity;
 import com.deviceomi.model.UserEntity;
+import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
@@ -10,10 +11,8 @@ import org.springframework.stereotype.Component;
 import java.util.HashSet;
 import java.util.Set;
 
-@Getter
-@Setter
+@Data
 @EqualsAndHashCode
-@Component
 public class UserBorrowResponse {
     /**
      * Id user
@@ -40,12 +39,13 @@ public class UserBorrowResponse {
      */
     private Set<BorrowResponse> borrows;
 
-    public UserBorrowResponse toBorrowResponse(BorrowEntity borrowEntity){
-        UserBorrowResponse userBorrowResponse=new UserBorrowResponse();
-        userBorrowResponse.setIdUser(borrowEntity.getUserBorrow().getId());
-        userBorrowResponse.setNameUser(borrowEntity.getUserBorrow().getFullname());
-        userBorrowResponse.setDepartment(borrowEntity.getDeparmentBorrow().getNameDepartment());
-        return userBorrowResponse;
+    public UserBorrowResponse(BorrowEntity borrowEntity){
+        if(borrowEntity.getUserBorrow()!=null){
+            this.setIdUser(borrowEntity.getUserBorrow().getId());
+            this.setNameUser(borrowEntity.getUserBorrow().getFullname());
+        }
+        if(borrowEntity.getDeparmentBorrow()!=null)
+            this.setDepartment(borrowEntity.getDeparmentBorrow().getNameDepartment());
     }
 
 }

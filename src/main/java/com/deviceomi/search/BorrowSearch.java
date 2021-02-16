@@ -9,4 +9,5 @@ public class BorrowSearch {
      * Id phòng ban
      * */
     private Long departmentId;
+
 }

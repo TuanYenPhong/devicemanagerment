@@ -10,11 +10,9 @@ import org.springframework.stereotype.Component;
 public class BorrowResponse {
     private Long id;
 
-    private String idDevice;
+    private String codeDevice;
 
     private String typeDevice;
-
-    private String description;
 
     private String reson;
 
@@ -32,28 +30,25 @@ public class BorrowResponse {
 
     private Integer status;
 
-    private String region;
-
     public BorrowResponse(BorrowEntity borrowEntity) {
-        setId(borrowEntity.getId());
-
-        if (borrowEntity.getStatus() != null){
-            setStatus(borrowEntity.getStatus());
+        if(borrowEntity.getId()!=null){
+            this.setId(borrowEntity.getId());
         }
-
         if(borrowEntity.getDeviceBorrow() !=null){
-            setIdDevice(borrowEntity.getDeviceBorrow().getCodeDevice());
-            setTypeDevice(borrowEntity.getDeviceBorrow().getTypeDevice());
-            setDescription(borrowEntity.getDeviceBorrow().getDescription());
+            this.setCodeDevice(borrowEntity.getDeviceBorrow().getCodeDevice());
+            this.setTypeDevice(borrowEntity.getDeviceBorrow().getTypeDevice());
         }
-        if(borrowEntity.getDeparmentBorrow() != null){
-            setNameBorrow(borrowEntity.getDeparmentBorrow().getNameDepartment());
+        if(borrowEntity.getDeparmentBorrow() != null)
+            this.setNameBorrow(borrowEntity.getDeparmentBorrow().getNameDepartment());
+        else this.setNameBorrow(borrowEntity.getUserBorrow().getFullname());
+
+        if (borrowEntity.getStatus() != null) this.setStatus(borrowEntity.getStatus());
+        if(borrowEntity.getDateReturn() != null)   setDateReturn(FormatDate.dateToString(borrowEntity.getDateReturn()));
+        this.setReson(borrowEntity.getReson());
+        if(borrowEntity.getDateBorrow() != null){
+            this.setDateBorrow(FormatDate.dateToString(borrowEntity.getDateBorrow()));
         }
-        setReson(borrowEntity.getReson());
-        setDateBorrow(borrowEntity.getCreatedDate().toString());
-        if(borrowEntity.getDateReturn() != null){
-            setDateReturn(borrowEntity.getDateReturn().toString());
-        }
+
     }
 }
 

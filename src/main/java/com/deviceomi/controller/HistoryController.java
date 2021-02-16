@@ -1,5 +1,6 @@
 package com.deviceomi.controller;
 
+import com.deviceomi.payload.response.HistoryResponse;
 import com.deviceomi.service.HistoryService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -11,6 +12,8 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.*;
 
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
@@ -25,7 +28,9 @@ public class HistoryController {
     @GetMapping("")
     public ResponseEntity findAllHistory(){
         try {
-            return new ResponseEntity(historyService.findAllHistory(),HttpStatus.OK);
+            List<HistoryResponse> history=historyService.findAllHistory();
+            if(!history.isEmpty()) return new ResponseEntity(history,HttpStatus.OK);
+            return new ResponseEntity(HttpStatus.NO_CONTENT);
         }catch (Exception e){
             return new ResponseEntity(HttpStatus.INTERNAL_SERVER_ERROR);
         }

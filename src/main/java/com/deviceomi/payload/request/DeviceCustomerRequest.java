@@ -9,31 +9,4 @@ import java.util.Date;
 
 @Data
 public class DeviceCustomerRequest extends DeviceBase {
-
-    /**
-     * Ngày bàn giao
-     */
-    private Date dateIssue;
-
-    /**
-     * Ngày thu hồi
-     */
-    private Date dateReturn;
-
-    /**
-     * Ngày trả khách hàng
-     */
-    private Date dateReturnCustomer;
-
-
-    @Override
-    public DeviceEntity toEntity() {
-        DeviceEntity deviceEntity = super.toEntity();
-
-        deviceEntity.setDateIssue(getDateIssue());
-        deviceEntity.setDateReturn(getDateReturn());
-        deviceEntity.setDateReturnCustomer(getDateReturnCustomer());
-
-        return deviceEntity;
-    }
 }

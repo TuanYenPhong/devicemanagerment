@@ -27,10 +27,37 @@ public class DeviceEntity extends AuditEntity{
     private String codeDevice;
 
     /**
-     * Mô tả
+     * Thông số thiết bị
      */
     @Column(name="description")
     private String description;
+
+    /**
+     * Trạng thái thiết bị
+     * */
+    @Column(name = "status")
+    private Integer status;
+
+    /**
+     * Tình trạng thiết bị
+     * */
+    @Column(name = "states")
+    private Integer states;
+
+    /**
+     * xac dinh loai thiet bi nao vd : work, test ...
+     * 0 : device
+     * 1 : thiet bi lam viec
+     * 2 : thiet bi test
+     * 3 : tb khac
+     * 4: tb khach hang
+     * */
+    @Column(name = "classification_device")
+    private Integer classificationDevice;
+
+    /*
+    *  Phần thiết bị
+    * */
 
     /**
      * Ngày nhập kho
@@ -56,6 +83,10 @@ public class DeviceEntity extends AuditEntity{
     @Column(name="firstTime")
     private Date firstTime;
 
+    /*
+     *  Phần thiết bị làm việc
+     * */
+
     /**
      * Thiết bị đi kèm
      */
@@ -69,13 +100,23 @@ public class DeviceEntity extends AuditEntity{
     private Date dateRange;
 
     /**
-     * Người quản lý / vị trí
+     * Thông tin tin bổ sung
      */
-    @Column(name="deviceManager")
-    private String deviceManager;
+    @Column(name="additionalInformation")
+    private String additionalInformation;
+
+    /*
+    * Thiết bị khách
+    * */
 
     /**
-     * Ngày bàn giao
+     * Ngày nhận thiết bị
+     * */
+    @Column(name="dateReceiveDevice")
+    private Date dateReceiveDevice;
+
+    /**
+     * Ngày bàn giao cho đội dự án
      */
     @Column(name="dateIssue")
     private Date dateIssue;
@@ -92,6 +133,18 @@ public class DeviceEntity extends AuditEntity{
     @Column(name="dateCustomer")
     private Date dateReturnCustomer;
 
+    /*
+    * cái này dùng chung
+    * */
+    /**
+     * Người quản lý / vị trí
+     */
+    @Column(name="deviceManager")
+    private String deviceManager;
+
+    @Column(name="isLive")
+    private Integer isLive;
+
     @JsonIgnore
     @OneToMany(mappedBy = "deviceBorrow")
     private Set<BorrowEntity> borrowDevices = new HashSet<>();
@@ -99,47 +152,4 @@ public class DeviceEntity extends AuditEntity{
     @JsonIgnore
     @OneToMany(mappedBy = "deviceRepair")
     private Set<RepairEntity> repairDevices = new HashSet<>();
-
-    @Column(name = "status")
-    private Integer status;
-
-    /**
-     * xac dinh loai thiet bi nao vd : work, test ...
-     * 0 : device
-     * 1 : thiet bi lam viec
-     * 2 : thiet bi test
-     * 3 : tb khac
-     * 4: tb khach hang
-     * */
-    @Column(name = "classification_device")
-    private Integer classificationDevice;
-
-    //convert to entity
-//    public DeviceEntity toEntity(DeviceEntity deviceEntity){
-//        typeDevice = deviceEntity.getTypeDevice();
-//
-//        codeDevice = deviceEntity.getCodeDevice();
-//
-//        description = deviceEntity.getDescription();
-//
-//        inputDay = deviceEntity.getInputDay();
-//
-//        guarantee = deviceEntity.getGuarantee();
-//
-//        supplyUnit = deviceEntity.getSupplyUnit();
-//
-//        firstTime = deviceEntity.getFirstTime();
-//
-//        deviceInclude = deviceEntity.getDeviceInclude();
-//
-//        dateRange = deviceEntity.getDateRange();
-//
-//        deviceManager = deviceEntity.getDeviceManager();
-//
-//        dateIssue = deviceEntity.getDateIssue();
-//
-//        dateReturn = deviceEntity.getDateReturn();
-//
-//        return this;
-//    }
 }
